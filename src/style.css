@@ -17,29 +17,48 @@ header nav ul li>*{pointer-events:all}
   border-radius:6px;padding:40px 10px 7px;
   font-family: 'Andale Mono', monospace;
   font-size:13px;font-weight:500;letter-spacing:0.01em;
-  color:rgba(0,0,0,0.85);transition:background 0.15s;
+  color:rgba(0,0,0,0.85);transition:all 0.3s ease;
   white-space:nowrap;
 }
-.nav-btn:hover,.nav-btn.active{background:rgba(0,0,0,0.06)}
-.nav-btn sup{font-size:9px;margin-top:-0.5px}
+.nav-btn:hover{background:rgba(0,0,0,0.03)}
+.nav-btn.active{background:rgba(0,0,0,0.06);font-weight:600}
 
-/* ── LANG TOGGLE ── */
+/* ABOUT OPEN - WHITE NAV */
+.about-open .nav-btn {
+  color: #fff;
+}
+.about-open .nav-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+.about-open .nav-btn.active {
+  background: rgba(255,255,255,0.15);
+}
+.about-open #lang-toggle {
+  color: #fff;
+}
+.about-open #lang-toggle .lang-btn {
+  color: rgba(255,255,255,0.5);
+}
+.about-open #lang-toggle .lang-btn.active {
+  color: #fff;
+}
+.about-open #view-toggle a {
+  color: #fff;
+}
+
 #lang-toggle {
-  position: absolute;
+  position: fixed;
   top: 4px;
-  right: 14px;
+  right: 4px;
+  z-index: 11;
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 40px 15px 7px;
+  font-family: 'Andale Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
-  font-weight: 500;
   pointer-events: all;
+  transition: all 0.3s ease;
 }
 .lang-btn {
   color: rgba(0, 0, 0, 0.4);

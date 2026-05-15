@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentView = 'project';
     setNavActive(''); // Remove home active
     projectPage.show(project);
+    document.body.classList.remove('about-open');
   });
 
   // Nav Interactions
@@ -114,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentView !== 'about') {
       currentView = 'about';
       aboutPage.show();
+      document.body.classList.add('about-open');
     }
   });
 
@@ -129,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     currentView = 'home';
     gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5 });
+    document.body.classList.remove('about-open');
   });
 
   document.getElementById('btn-research').addEventListener('click', (e) => {
@@ -140,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentView = 'research';
       researchPage.show();
     }
+    document.body.classList.remove('about-open');
   });
 
 
