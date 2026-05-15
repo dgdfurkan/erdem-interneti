@@ -2,7 +2,7 @@
 export const PROJECTS = [
   {
     "id": "derricksalvo",
-    "title": "DERRICKSALVO",
+    "title": "DERRICK SALVO",
     "coverImage": "esermiktar/derricksalvo/1/kl1.6.jpg",
     "tags": [
       "AI",
@@ -382,7 +382,7 @@ export const PROJECTS = [
   },
   {
     "id": "scarch600void",
-    "title": "SCARCH600VOID",
+    "title": "SCORCH 600 VOID",
     "coverImage": "esermiktar/scarch600void/1/MT3.jpg",
     "tags": [
       "AI",
