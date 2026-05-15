@@ -116,7 +116,7 @@ export class GalleryScene {
     // BURASI
     const TILE_WIDTH = 2.8;
     const TILE_HEIGHT = 3.9;
-    const THICKNESS = 0.1; // Kalınlık yarıya düşürüldü
+    const THICKNESS = 0.05; // Daha zarif olması için tekrar yarıya düşürüldü
     const STEP_Z = 2.1;
 
     // Kasıyor sorununu çözmek için obje sayısı azaltıldı (54 -> 36).
@@ -132,32 +132,32 @@ export class GalleryScene {
     const edgesMat = new THREE.LineBasicMaterial({
       color: 0xffffff,
       transparent: true,
-      opacity: 0.3
+      opacity: 0.1 // Glassmorphism için kenarları iyice şeffaf yapıyoruz
     });
 
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel materyali - Cam efekti ile (MeshPhysicalMaterial)
+        // Görsel materyali - Glassmorphism efekti (MeshPhysicalMaterial)
         const imageMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           transparent: true,
           opacity: 1.0,
-          transmission: 0.3, // Hafif geçirgenlik
-          roughness: 0.1,
-          metalness: 0.1,
-          ior: 1.5,
+          transmission: 0.4, // Biraz daha şeffaf
+          roughness: 0.15,   // Hafif buzlu cam (frosted) hissi
+          metalness: 0.05,
+          ior: 1.45,         // Camın kırılma indeksi
           thickness: THICKNESS,
         });
 
-        // Yan yüzeyler için tam cam materyali
+        // Yan yüzeyler (Kenarlar) - Tam cam
         const sideMat = new THREE.MeshPhysicalMaterial({ 
           color: 0xffffff, 
           transparent: true,
-          opacity: 0.8,
-          transmission: 0.9, // Yanlar daha şeffaf ve cam gibi
-          roughness: 0.05,
-          metalness: 0.1,
-          ior: 1.5,
+          opacity: 0.4,
+          transmission: 0.95,
+          roughness: 0.1,
+          metalness: 0.05,
+          ior: 1.45,
           thickness: THICKNESS,
         });
 
