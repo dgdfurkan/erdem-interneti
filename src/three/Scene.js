@@ -79,16 +79,6 @@ export class GalleryScene {
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
     dirLight.position.set(-5, 10, 5);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024;
-    dirLight.shadow.mapSize.height = 1024;
-    dirLight.shadow.camera.near = 0.5;
-    dirLight.shadow.camera.far = 25;
-    dirLight.shadow.camera.left = -10;
-    dirLight.shadow.camera.right = 10;
-    dirLight.shadow.camera.top = 10;
-    dirLight.shadow.camera.bottom = -10;
-    dirLight.shadow.bias = -0.001;
     this.scene.add(dirLight);
 
     // Setup Post Processing
@@ -126,7 +116,7 @@ export class GalleryScene {
     // BURASI
     const TILE_WIDTH = 2.8;
     const TILE_HEIGHT = 3.9;
-    const THICKNESS = 0.02;
+    const THICKNESS = 0.2; // Kalınlık isteği üzerine artırıldı (Premium slab hissi)
     const STEP_Z = 2.1;
 
     // Kasıyor sorununu çözmek için obje sayısı azaltıldı (54 -> 36).
@@ -134,35 +124,45 @@ export class GalleryScene {
     const REPEAT = 4;
     let globalIndex = 0;
 
-    const planeGeo = new THREE.PlaneGeometry(TILE_WIDTH, TILE_HEIGHT);
+    // Plane yerine BoxGeometry kullanarak gerçek hacim sağlıyoruz
+    const boxGeo = new THREE.BoxGeometry(TILE_WIDTH, TILE_HEIGHT, THICKNESS);
 
     // Daha zarif beyaz kenar ışığı (Kartın sınırları)
-    const edgesGeo = new THREE.EdgesGeometry(planeGeo);
+    const edgesGeo = new THREE.EdgesGeometry(boxGeo);
     const edgesMat = new THREE.LineBasicMaterial({
       color: 0xffffff,
       transparent: true,
       opacity: 0.3
     });
 
-    // Subtile plane to catch shadows
-    const shadowPlaneGeo = new THREE.PlaneGeometry(50, 50);
-    const shadowPlaneMat = new THREE.ShadowMaterial({ opacity: 0.1 });
-    const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowPlaneMat);
-    shadowPlane.position.z = -1.5;
-    shadowPlane.receiveShadow = true;
-    shadowPlane.frustumCulled = false; // Culling'i kapat
-    this.group.add(shadowPlane);
-
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel plane — Kartın kendisi
+        // Görsel materyali - Sadece ön yüzey için
         const imageMat = new THREE.MeshBasicMaterial({
           color: 0xffffff,
           transparent: true,
           opacity: 1.0
         });
-        const mesh = new THREE.Mesh(planeGeo, imageMat);
-        mesh.frustumCulled = false; // Görüş alanından çıkınca aniden yok olmasını engelle
+
+        // Yan yüzeyler için koyu/gri bir materyal
+        const sideMat = new THREE.MeshBasicMaterial({ 
+          color: 0x111111, 
+          transparent: true,
+          opacity: 1.0 
+        });
+
+        // BoxGeometry için 6 yüzeyin materyalleri
+        const materials = [
+          sideMat, // +x
+          sideMat, // -x
+          sideMat, // +y
+          sideMat, // -y
+          imageMat, // +z (ÖN YÜZ)
+          sideMat  // -z
+        ];
+
+        const mesh = new THREE.Mesh(boxGeo, materials);
+        mesh.frustumCulled = false; 
 
         // CSS Glowing Border efektini ekle
         const edgeLines = new THREE.LineSegments(edgesGeo, edgesMat);
@@ -174,9 +174,6 @@ export class GalleryScene {
         labelMesh.frustumCulled = false;
         mesh.add(labelMesh);
 
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-
         mesh.position.set(0, 0, -(globalIndex * STEP_Z));
 
         this.group.add(mesh);
@@ -185,6 +182,7 @@ export class GalleryScene {
           mesh,
           imageMesh: mesh,
           imageMat,
+          sideMat, // Yan yüzeylerin opacity kontrolü için
           labelMesh,
           proj,
           index: globalIndex,
@@ -422,6 +420,11 @@ export class GalleryScene {
       // Daha yumuşak opacity geçişleri
       const lerpSpeed = 0.08;
       tile.imageMat.opacity += (targetOpacity - tile.imageMat.opacity) * lerpSpeed;
+      
+      // Yan yüzeylerin de aynı anda sönmesini sağlıyoruz
+      if (tile.sideMat) {
+        tile.sideMat.opacity += (targetOpacity - tile.sideMat.opacity) * lerpSpeed;
+      }
 
       // Label opacity da aynı şekilde fade olsun
       if (tile.labelMesh) {
