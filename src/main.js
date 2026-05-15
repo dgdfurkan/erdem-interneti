@@ -2,6 +2,7 @@ import './style.css';
 import { GalleryScene } from './three/Scene.js';
 import { ProjectPage } from './pages/ProjectPage.js';
 import { ResearchPage } from './pages/ResearchPage.js';
+import { AboutPage } from './pages/AboutPage.js';
 document.addEventListener('DOMContentLoaded', () => {
   // --- i18n (Language) System ---
   const translations = {
@@ -76,13 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const gallery = new GalleryScene(canvasWrap);
   const projectPage = new ProjectPage(appContainer);
   const researchPage = new ResearchPage(appContainer);
+  const aboutPage = new AboutPage(appContainer);
 
-  let currentView = 'home'; // 'home', 'project', 'research'
+  let currentView = 'home'; // 'home', 'project', 'research', 'about'
 
   // Global Event Bus
   window.addEventListener('project-click', (e) => {
     const project = e.detail;
     if (currentView === 'research') researchPage.hide();
+    if (currentView === 'about') aboutPage.hide();
     currentView = 'project';
     setNavActive(''); // Remove home active
     projectPage.show(project);
@@ -91,11 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Nav Interactions
   const btnHome = document.getElementById('btn-home');
   const btnAbout = document.getElementById('btn-about');
-  const aboutOverlay = document.getElementById('about-overlay');
-  const blurOverlay = document.getElementById('blur-overlay');
-  const aboutFooter = document.getElementById('contact-footer'); // Footer id can stay same
-
-  let aboutOpen = false;
 
   function setNavActive(id) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -105,43 +103,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function closeAbout() {
-    aboutOpen = false;
-    blurOverlay.classList.remove('visible');
-    aboutOverlay.classList.remove('visible');
-    aboutFooter.classList.remove('visible');
-  }
 
-  btnAbout.addEventListener('click', () => {
-    if (aboutOpen) {
-      closeAbout();
-      setNavActive(currentView === 'home' ? 'btn-home' : '');
-      return;
-    }
-    aboutOpen = true;
+
+  btnAbout.addEventListener('click', (e) => {
+    e.preventDefault();
     setNavActive('btn-about');
-    blurOverlay.classList.add('visible');
-    aboutOverlay.classList.add('visible');
-    aboutFooter.classList.add('visible');
+    if (currentView === 'project') projectPage.hide();
+    if (currentView === 'research') researchPage.hide();
+    if (currentView !== 'about') {
+      currentView = 'about';
+      aboutPage.show();
+    }
   });
 
   btnHome.addEventListener('click', (e) => {
     e.preventDefault();
-    closeAbout();
     setNavActive('btn-home');
     if (currentView === 'project') {
       projectPage.hide();
     } else if (currentView === 'research') {
       researchPage.hide();
+    } else if (currentView === 'about') {
+      aboutPage.hide();
     }
     currentView = 'home';
+    gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5 });
   });
 
   document.getElementById('btn-research').addEventListener('click', (e) => {
     e.preventDefault();
-    closeAbout();
     setNavActive('btn-research');
     if (currentView === 'project') projectPage.hide();
+    if (currentView === 'about') aboutPage.hide();
     if (currentView !== 'research') {
       currentView = 'research';
       researchPage.show();
