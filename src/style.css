@@ -227,6 +227,7 @@ canvas{display:block;width:100%!important;height:100%!important}
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
+    align-items: flex-start;
   }
   .project-info-slide {
     flex: 0 0 auto;
@@ -238,10 +239,12 @@ canvas{display:block;width:100%!important;height:100%!important}
     flex-direction: column;
     height: auto;
     width: 100%;
+    min-width: 0;
   }
   .project-gallery img, .project-gallery video, .video-wrapper {
     height: auto !important;
     width: 100% !important;
+    flex: 0 0 auto;
   }
 }
 .project-title {

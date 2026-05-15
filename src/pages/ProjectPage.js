@@ -34,6 +34,7 @@ export class ProjectPage {
     this.currentProject = project;
     this.el.innerHTML = '';
     this.el.scrollLeft = 0;
+    this.el.scrollTop = 0;
     
     // Info Slide (ilk ekran — başlık ve açıklama)
     const infoSlide = document.createElement('div');
