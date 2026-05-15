@@ -66,9 +66,9 @@ export class GalleryScene {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xfafafa); // Set opaque background for proper glass transmission
 
-    // Unveil.fr exact FOV and Perspective (Low FOV for telefoto effect)
+    // ESER MİKTAR exact FOV and Perspective (Low FOV for telefoto effect)
     this.camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(1, 12, 10); // Higher Y and closer Z for the Unveil look // BURASI
+    this.camera.position.set(1, 12, 10); // Higher Y and closer Z for the ESER MİKTAR look // BURASI
 
     const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     pmremGenerator.compileEquirectangularShader();
@@ -100,7 +100,7 @@ export class GalleryScene {
   createGrid() {
     this.group = new THREE.Group();
 
-    // Unveil exact tilt and perspective (Bottom-left to Top-right cascade) // BURASI
+    // ESER MİKTAR exact tilt and perspective (Bottom-left to Top-right cascade) // BURASI
     this.group.rotation.x = -0.45; // Kartların geriye doğru yatması (Distant cards go up)
     this.group.rotation.y = -0.39; // Derinliğin sağa doğru gitmesi (Distant cards go right)
     this.group.rotation.z = 0.05;  // Ufak bir düzeltme açısı
