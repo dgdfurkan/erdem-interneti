@@ -221,6 +221,29 @@ canvas{display:block;width:100%!important;height:100%!important}
   padding: 0 10vw;
   background: #fafafa;
 }
+
+@media (max-width: 600px) {
+  .project-page {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .project-info-slide {
+    flex: 0 0 auto;
+    height: auto;
+    padding: 140px 24px 60px;
+    width: 100%;
+  }
+  .project-gallery {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+  }
+  .project-gallery img, .project-gallery video, .video-wrapper {
+    height: auto !important;
+    width: 100% !important;
+  }
+}
 .project-title {
   font-family: 'Andale Mono', monospace;
   font-size: 32px;

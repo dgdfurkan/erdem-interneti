@@ -10,9 +10,9 @@ export class ProjectPage {
     // Vite base URL — public klasörüne erişim için gerekli
     this.baseURL = import.meta.env.BASE_URL || '/';
 
-    // Fare tekerleğini (vertical scroll) yatay kaydırmaya (horizontal) çeviriyoruz
+    // Fare tekerleğini (vertical scroll) yatay kaydırmaya (horizontal) çeviriyoruz (Sadece Desktop için)
     this.el.addEventListener('wheel', (e) => {
-      if (e.deltaY !== 0) {
+      if (window.innerWidth > 600 && e.deltaY !== 0) {
         e.preventDefault();
         this.el.scrollLeft += e.deltaY;
       }
