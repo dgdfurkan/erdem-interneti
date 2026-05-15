@@ -1,0 +1,19 @@
+{
+  "name": "erdem-interneti",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "pdf-parse": "^1.1.1",
+    "three": "^0.165.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.11"
+  }
+}

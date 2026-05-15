@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="https://www.datocms-assets.com/127841/1714642321-unveil_favicon_512x512.png?auto=format&h=32&w=32">
+  <title>UNVEIL®</title>
+  <meta name="description" content="UNVEIL® is a creative studio using artificial intelligence to expand human creativity.">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div id="white-fade"></div>
+
+  <!-- NAV -->
+  <header>
+    <nav>
+      <ul>
+        <li><a class="nav-btn active" id="btn-home" href="#"><span>UNVEIL</span><sup>®</sup><span style="margin-left:2px" data-i18n-key="nav_projects">Projects</span></a></li>
+        <li><a class="nav-btn" id="btn-research" href="#"><span data-i18n-key="nav_research">Research</span></a></li>
+        <li><a class="nav-btn" id="btn-studio" href="#"><span data-i18n-key="nav_studio">Studio</span></a></li>
+        <li><button class="nav-btn" id="btn-contact"><span data-i18n-key="nav_contact">Contact</span></button></li>
+      </ul>
+    </nav>
+    <div id="lang-toggle">
+      <button class="lang-btn active" data-lang="tr">TR</button>
+      <span class="lang-sep">/</span>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <!-- APP ROOT -->
+  <div id="app"></div>
+
+  <!-- CURSOR LABEL -->
+  <span id="cursor-label"></span>
+
+  <!-- BOTTOM RIGHT TOGGLE -->
+  <div id="view-toggle">
+    <ul>
+      <li><a href="#" class="active" id="toggle-overview"><span data-i18n-key="toggle_overview">Overview</span></a></li>
+      <li><a href="#" id="toggle-index"><span data-i18n-key="toggle_index">Index</span></a></li>
+    </ul>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact-overlay">
+    <nav>
+      <ul style="display:flex;gap:2px;padding:0 14px;list-style:none">
+        <li><a class="contact-link" href="mailto:contact@unveil.fr" target="_blank" rel="noopener">contact@unveil.fr</a></li>
+        <li><a class="contact-link" href="https://instagram.com/byunveil/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a class="contact-link" href="https://maps.app.goo.gl/yvLUoqpnDYZmS8x56" target="_blank" rel="noopener">25 Rue Henry Monnier, 75009 Paris</a></li>
+      </ul>
+    </nav>
+  </section>
+  <div id="contact-footer">
+    <a href="#" data-i18n-key="footer_cookie">Cookie Policy</a>
+    <a href="#" data-i18n-key="footer_privacy">Privacy Policy</a>
+    <a href="#" data-i18n-key="footer_legal">Legal Notice</a>
+  </div>
+  <div id="blur-overlay"></div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
