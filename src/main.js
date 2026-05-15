@@ -1,4 +1,5 @@
 import './style.css';
+import gsap from 'gsap';
 import { GalleryScene } from './three/Scene.js';
 import { ProjectPage } from './pages/ProjectPage.js';
 import { ResearchPage } from './pages/ResearchPage.js';
@@ -8,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const translations = {
     tr: {
       nav_projects: 'Projeler',
-      nav_research: 'Araştırma',
+      nav_research: 'Grid',
       nav_about: 'Hakkında',
       about_bio: "2000 yılında Tokat'ta doğan Erdem Temür, şu an İstanbul Bilgi Üniversitesi Görsel İletişim Tasarımı'nda son sınıf öğrencisi ve İstanbul merkezli bir Hard Surface 3D tasarımcısıdır. Oyun dünyasına olan tutkusu, onu karmaşık mekanik yapılar ve detaylı endüstriyel tasarımlar oluşturmaya yöneltti. Çalışmalarında estetik ve işlevselliği birleştirerek, geleceğin teknolojilerini ve bilim kurgu dünyalarını hayata geçirmeyi amaçlıyor.",
       toggle_overview: 'Genel Bakış',
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     en: {
       nav_projects: 'Projects',
-      nav_research: 'Research',
+      nav_research: 'Grid',
       nav_about: 'About',
       about_bio: "Born in Tokat in 2000, Erdem Temür is currently a senior Visual Communication Design student at Istanbul Bilgi University and an Istanbul-based Hard Surface 3D designer. His passion for gaming led him to specialize in creating complex mechanical structures and detailed industrial designs. By blending aesthetics with functionality in his work, he aims to bring future technologies and science fiction worlds to life.",
       toggle_overview: 'Overview',

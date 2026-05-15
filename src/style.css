@@ -15,6 +15,7 @@ header nav ul li>*{pointer-events:all}
 .nav-btn{
   display:flex;width:100%;align-items:flex-start;gap:2px;
   border-radius:6px;padding:40px 10px 7px;
+  font-family: 'Andale Mono', monospace;
   font-size:13px;font-weight:400;letter-spacing:0.01em;
   color:rgba(0,0,0,0.85);transition:background 0.15s;
   white-space:nowrap;
@@ -123,6 +124,7 @@ canvas{display:block;width:100%!important;height:100%!important}
   flex: 1;
 }
 .about-name {
+  font-family: 'Andale Mono', monospace;
   font-size: 42px;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -220,6 +222,7 @@ canvas{display:block;width:100%!important;height:100%!important}
   background: #fafafa;
 }
 .project-title {
+  font-family: 'Andale Mono', monospace;
   font-size: 32px;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -314,6 +317,7 @@ canvas{display:block;width:100%!important;height:100%!important}
   margin-bottom: 80px;
 }
 .research-project-title {
+  font-family: 'Andale Mono', monospace;
   font-size: 24px;
   font-weight: 400;
   letter-spacing: 0.02em;
