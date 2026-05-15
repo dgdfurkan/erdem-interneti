@@ -236,15 +236,17 @@ canvas{display:block;width:100%!important;height:100%!important}
     width: 100%;
   }
   .project-gallery {
-    flex-direction: column;
-    height: auto;
+    display: block; /* Flex yerine block daha güvenli dikey akışta */
     width: 100%;
+    height: auto;
     min-width: 0;
   }
   .project-gallery img, .project-gallery video, .video-wrapper {
-    height: auto !important;
+    display: block;
     width: 100% !important;
-    flex: 0 0 auto;
+    height: auto !important;
+    object-fit: contain !important; /* Zoom problemini çözer */
+    margin-bottom: 4px;
   }
 }
 .project-title {
