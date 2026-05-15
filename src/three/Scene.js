@@ -86,11 +86,9 @@ export class GalleryScene {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
     // Performans için Bloom çözünürlüğü yarıya düşürüldü (Görselliği bozmaz, FPS'i uçurur)
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.15, 0.4, 0.85);
+    // Bloom efekti yeterli, Chromatic Aberration (renk kayması) istenmediği için kaldırıldı
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.1, 0.4, 0.85);
     this.composer.addPass(bloomPass);
-
-    this.caPass = new ShaderPass(ChromaticAberrationShader);
-    this.composer.addPass(this.caPass);
 
     this.clock = new THREE.Clock();
 
@@ -130,33 +128,32 @@ export class GalleryScene {
     // Daha zarif beyaz kenar ışığı (Kartın sınırları)
     const edgesGeo = new THREE.EdgesGeometry(boxGeo);
     const edgesMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.1 // Glassmorphism için kenarları iyice şeffaf yapıyoruz
+      opacity: 0.15 // Çok daha temiz ve ince bir cam çerçevesi
     });
 
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel materyali - Glassmorphism efekti (MeshPhysicalMaterial)
+        // Görsel materyali - "Cam Slayt" efekti (Görselin kendisi cam gibi)
         const imageMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           transparent: true,
-          opacity: 1.0,
-          transmission: 0.4, // Biraz daha şeffaf
-          roughness: 0.15,   // Hafif buzlu cam (frosted) hissi
-          metalness: 0.05,
-          ior: 1.45,         // Camın kırılma indeksi
+          opacity: 0.9,      // Görselin netliği için opacity yüksek
+          transmission: 0.5, // Ama arkasını cam gibi göstersin
+          roughness: 0.05,   // Pürüzsüz cam yüzeyi
+          metalness: 0.0,
+          ior: 1.45,
           thickness: THICKNESS,
+          envMapIntensity: 1.0
         });
 
-        // Yan yüzeyler (Kenarlar) - Tam cam
+        // Yan yüzeyler - Tam şeffaf cam
         const sideMat = new THREE.MeshPhysicalMaterial({ 
           color: 0xffffff, 
           transparent: true,
-          opacity: 0.4,
-          transmission: 0.95,
-          roughness: 0.1,
-          metalness: 0.05,
+          opacity: 0.2,
+          transmission: 1.0, 
+          roughness: 0.0,
+          metalness: 0.0,
           ior: 1.45,
           thickness: THICKNESS,
         });
