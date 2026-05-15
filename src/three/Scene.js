@@ -116,7 +116,7 @@ export class GalleryScene {
     // BURASI
     const TILE_WIDTH = 2.8;
     const TILE_HEIGHT = 3.9;
-    const THICKNESS = 0.2; // Kalınlık isteği üzerine artırıldı (Premium slab hissi)
+    const THICKNESS = 0.1; // Kalınlık yarıya düşürüldü
     const STEP_Z = 2.1;
 
     // Kasıyor sorununu çözmek için obje sayısı azaltıldı (54 -> 36).
@@ -137,18 +137,28 @@ export class GalleryScene {
 
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel materyali - Sadece ön yüzey için
-        const imageMat = new THREE.MeshBasicMaterial({
+        // Görsel materyali - Cam efekti ile (MeshPhysicalMaterial)
+        const imageMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           transparent: true,
-          opacity: 1.0
+          opacity: 1.0,
+          transmission: 0.3, // Hafif geçirgenlik
+          roughness: 0.1,
+          metalness: 0.1,
+          ior: 1.5,
+          thickness: THICKNESS,
         });
 
-        // Yan yüzeyler için koyu/gri bir materyal
-        const sideMat = new THREE.MeshBasicMaterial({ 
-          color: 0x111111, 
+        // Yan yüzeyler için tam cam materyali
+        const sideMat = new THREE.MeshPhysicalMaterial({ 
+          color: 0xffffff, 
           transparent: true,
-          opacity: 1.0 
+          opacity: 0.8,
+          transmission: 0.9, // Yanlar daha şeffaf ve cam gibi
+          roughness: 0.05,
+          metalness: 0.1,
+          ior: 1.5,
+          thickness: THICKNESS,
         });
 
         // BoxGeometry için 6 yüzeyin materyalleri
