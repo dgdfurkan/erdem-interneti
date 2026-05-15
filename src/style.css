@@ -224,29 +224,33 @@ canvas{display:block;width:100%!important;height:100%!important}
 
 @media (max-width: 600px) {
   .project-page {
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-    align-items: flex-start;
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    background: #fafafa;
   }
   .project-info-slide {
-    flex: 0 0 auto;
-    height: auto;
-    padding: 140px 24px 60px;
-    width: 100%;
+    height: auto !important;
+    padding: 120px 24px 40px !important;
+    width: 100% !important;
   }
   .project-gallery {
-    display: block; /* Flex yerine block daha güvenli dikey akışta */
-    width: 100%;
-    height: auto;
-    min-width: 0;
-  }
-  .project-gallery img, .project-gallery video, .video-wrapper {
-    display: block;
+    display: block !important;
     width: 100% !important;
     height: auto !important;
-    object-fit: contain !important; /* Zoom problemini çözer */
-    margin-bottom: 4px;
+    min-width: 0 !important;
+  }
+  .project-gallery img, 
+  .project-gallery video, 
+  .video-wrapper,
+  .video-wrapper video {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    margin-bottom: 10px !important;
   }
 }
 .project-title {
