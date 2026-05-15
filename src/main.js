@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     tr: {
       nav_projects: 'Projeler',
       nav_research: 'Araştırma',
-      nav_studio: 'Stüdyo',
-      nav_contact: 'İletişim',
+      nav_about: 'Hakkında',
+      about_bio: "2000 yılında Tokat'ta doğan Erdem Temür, şu an İstanbul Bilgi Üniversitesi Görsel İletişim Tasarımı'nda son sınıf öğrencisi ve İstanbul merkezli bir Hard Surface 3D tasarımcısıdır. Oyun dünyasına olan tutkusu, onu karmaşık mekanik yapılar ve detaylı endüstriyel tasarımlar oluşturmaya yöneltti. Çalışmalarında estetik ve işlevselliği birleştirerek, geleceğin teknolojilerini ve bilim kurgu dünyalarını hayata geçirmeyi amaçlıyor.",
       toggle_overview: 'Genel Bakış',
       toggle_index: 'İndeks',
       footer_cookie: 'Çerez Politikası',
@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     en: {
       nav_projects: 'Projects',
       nav_research: 'Research',
-      nav_studio: 'Studio',
-      nav_contact: 'Contact',
+      nav_about: 'About',
+      about_bio: "Born in Tokat in 2000, Erdem Temür is currently a senior Visual Communication Design student at Istanbul Bilgi University and an Istanbul-based Hard Surface 3D designer. His passion for gaming led him to specialize in creating complex mechanical structures and detailed industrial designs. By blending aesthetics with functionality in his work, he aims to bring future technologies and science fiction worlds to life.",
       toggle_overview: 'Overview',
       toggle_index: 'Index',
       footer_cookie: 'Cookie Policy',
@@ -90,12 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Nav Interactions
   const btnHome = document.getElementById('btn-home');
-  const btnContact = document.getElementById('btn-contact');
-  const contactOverlay = document.getElementById('contact-overlay');
+  const btnAbout = document.getElementById('btn-about');
+  const aboutOverlay = document.getElementById('about-overlay');
   const blurOverlay = document.getElementById('blur-overlay');
-  const contactFooter = document.getElementById('contact-footer');
+  const aboutFooter = document.getElementById('contact-footer'); // Footer id can stay same
 
-  let contactOpen = false;
+  let aboutOpen = false;
 
   function setNavActive(id) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -105,29 +105,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function closeContact() {
-    contactOpen = false;
+  function closeAbout() {
+    aboutOpen = false;
     blurOverlay.classList.remove('visible');
-    contactOverlay.classList.remove('visible');
-    contactFooter.classList.remove('visible');
+    aboutOverlay.classList.remove('visible');
+    aboutFooter.classList.remove('visible');
   }
 
-  btnContact.addEventListener('click', () => {
-    if (contactOpen) {
-      closeContact();
+  btnAbout.addEventListener('click', () => {
+    if (aboutOpen) {
+      closeAbout();
       setNavActive(currentView === 'home' ? 'btn-home' : '');
       return;
     }
-    contactOpen = true;
-    setNavActive('btn-contact');
+    aboutOpen = true;
+    setNavActive('btn-about');
     blurOverlay.classList.add('visible');
-    contactOverlay.classList.add('visible');
-    contactFooter.classList.add('visible');
+    aboutOverlay.classList.add('visible');
+    aboutFooter.classList.add('visible');
   });
 
   btnHome.addEventListener('click', (e) => {
     e.preventDefault();
-    closeContact();
+    closeAbout();
     setNavActive('btn-home');
     if (currentView === 'project') {
       projectPage.hide();
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-research').addEventListener('click', (e) => {
     e.preventDefault();
-    closeContact();
+    closeAbout();
     setNavActive('btn-research');
     if (currentView === 'project') projectPage.hide();
     if (currentView !== 'research') {
@@ -148,13 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  ['btn-studio'].forEach(id => {
-    document.getElementById(id).addEventListener('click', (e) => {
-      e.preventDefault();
-      closeContact();
-      setNavActive(id);
-    });
-  });
+
 
   // Init Fade
   const whiteFade = document.getElementById('white-fade');

@@ -230,7 +230,7 @@ export const PROJECTS = [
       }
     ],
     "description_tr": "Sadece iki rengin hüküm sürdüğü bir gezegen için tasarlandı. Tuzlu beyaz bir zemin, pürüzsüz açık mavi bir gökyüzü. Alba'nın tek katmanlı atmosferinde hayatta kalmak için gereken Helmora, bir vanadan ilham alan borulu solunum sistemiyle organik ve mekanik arasındaki sınırı siler. Nefes almak burada bir mühendislik meselesidir.",
-    "description_en": "Designed for a world ruled by only two colors. A salt-white ground and a smooth, open-blue sky. Helmora exists to sustain life within Alba's single-layer atmosphere. Its tubular breathing system, inspired by industrial valve forms, erases the boundary between the organic and the mechanical. On Alba, breathing is an act of engineering."
+    "description_en": "Designed for a world ruled by only two colors. A salt white ground and a smooth, open blue sky. Helmora exists to sustain life within Alba's single layer atmosphere. Its tubular breathing system, inspired by industrial valve forms, erases the boundary between the organic and the mechanical. On Alba, breathing is an act of engineering."
   },
   {
     "id": "monulit",
@@ -304,7 +304,7 @@ export const PROJECTS = [
       }
     ],
     "description_tr": "Sıradan bir çalışma sandalyesinin formundan yola çıkan Monulit, iki cephe arasında roket hızıyla süzülen bir seyahat aracına dönüşür. Düşman hava sahasında tehlikeli derecede görünür olsa da kendi mevzilerini denetlemek, önlem almak ve hızla yeniden konuşlanmak için eşsizdir.",
-    "description_en": "What begins as the silhouette of an ordinary office chair becomes Monulit. A rocket-propelled reconnaissance vehicle capable of traversing entire frontlines in moments. Dangerously visible in hostile airspace, yet unmatched for inspecting allied positions and rapid redeployment."
+    "description_en": "What begins as the silhouette of an ordinary office chair becomes Monulit. A rocket propelled reconnaissance vehicle capable of traversing entire frontlines in moments. Dangerously visible in hostile airspace, yet unmatched for inspecting allied positions and rapid redeployment."
   },
   {
     "id": "prowl",
@@ -467,7 +467,7 @@ export const PROJECTS = [
       }
     ],
     "description_tr": "Ocakta kaynayan şekerin o gözenekli, simsiyah, pıtrak dokusundan doğan Scorch 600 Void ne tam bir şehir motoru ne de tam bir arazi aracıdır. İkisinin arasında, ikisinin ötesinde bir yerde durur. Yanmış bir iskeletin üzerine oturur gibi hissettiren gövdesi iç aksamını gizlemez, sergiler. 600cc kalbiyle her zeminde yanar, her yüzeyde iz bırakır.",
-    "description_en": "Born from the porous, charred texture of scorched caramel, the Scorch 600 Void exists between worlds. Neither city nor off-road, but something beyond both. Its skeleton-like body conceals nothing. It exposes its own mechanics like a living organism. With a 600cc heart beating beneath its burned frame, it leaves a mark on every surface it touches."
+    "description_en": "Born from the porous, charred texture of scorched caramel, the Scorch 600 Void exists between worlds. Neither city nor off road, but something beyond both. Its skeleton like body conceals nothing. It exposes its own mechanics like a living organism. With a 600cc heart beating beneath its burned frame, it leaves a mark on every surface it touches."
   },
   {
     "id": "seizor",

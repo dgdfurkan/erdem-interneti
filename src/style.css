@@ -81,18 +81,38 @@ canvas{display:block;width:100%!important;height:100%!important}
 #view-toggle a{font-size:13px;color:rgba(0,0,0,0.35);transition:color 0.2s}
 #view-toggle a.active{color:rgba(0,0,0,0.85)}
 
-/* ── CONTACT OVERLAY ── */
-#contact-overlay{
+/* ── ABOUT OVERLAY ── */
+#about-overlay{
   position:fixed;inset:0;z-index:9;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   pointer-events:none;opacity:0;transition:opacity 0.35s;
+  padding: 40px;
 }
-#contact-overlay.visible{pointer-events:all;opacity:1}
-.contact-link{
-  display:block;padding:14px 16px;border-radius:6px;font-size:13px;
-  color:rgba(0,0,0,0.3);transition:background 0.15s,color 0.15s;
+#about-overlay.visible{pointer-events:all;opacity:1}
+.about-content {
+  max-width: 600px;
+  text-align: center;
 }
-.contact-link:hover{background:rgba(0,0,0,0.06);color:rgba(0,0,0,0.85)}
+.about-text p {
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  color: rgba(0,0,0,0.8);
+  margin-bottom: 40px;
+}
+.about-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.about-links a {
+  font-size: 13px;
+  color: rgba(0,0,0,0.4);
+  transition: color 0.2s;
+}
+.about-links a:hover {
+  color: rgba(0,0,0,0.9);
+}
 #contact-footer{
   position:fixed;bottom:11px;left:14px;z-index:9;
   display:flex;gap:12px;font-size:11px;
