@@ -74,23 +74,31 @@ export class ProjectPage {
         // 🔊 Ses butonu — sağ alt köşe
         const soundBtn = document.createElement('button');
         soundBtn.className = 'video-sound-btn';
-        soundBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+        
+        const muteIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+        const unmuteIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
 
-        soundBtn.addEventListener('click', () => {
-          // Sesli, tek seferlik, baştan çal
-          mediaEl.loop = false;
-          mediaEl.muted = false;
-          mediaEl.currentTime = 0;
-          mediaEl.play();
-          soundBtn.classList.add('hidden');
-        });
+        const updateBtnUI = () => {
+          soundBtn.innerHTML = (window.isMuted === false) ? unmuteIcon : muteIcon;
+          mediaEl.muted = window.isMuted !== false;
+        };
 
-        // Video bittiğinde → sessiz loop'a dön, buton geri gelsin
-        mediaEl.addEventListener('ended', () => {
-          mediaEl.muted = true;
-          mediaEl.loop = true;
-          mediaEl.play();
-          soundBtn.classList.remove('hidden');
+        // Başlangıç durumu
+        if (window.isMuted === undefined) window.isMuted = true;
+        updateBtnUI();
+
+        soundBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.isMuted = !window.isMuted;
+          
+          // Sayfadaki TÜM videoların sesini güncelle
+          document.querySelectorAll('video').forEach(v => {
+            v.muted = window.isMuted;
+          });
+          // TÜM ses butonlarını güncelle
+          document.querySelectorAll('.video-sound-btn').forEach(btn => {
+            btn.innerHTML = (window.isMuted === false) ? unmuteIcon : muteIcon;
+          });
         });
 
         wrapper.appendChild(mediaEl);
