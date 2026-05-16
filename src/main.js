@@ -242,26 +242,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Theme Toggle & Persistence
-  const themeToggle = document.getElementById('theme');
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+
+  const sunSVG = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+  const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+
+  let isDarkTheme = true;
+
   if (themeToggle) {
     // Check localStorage on load
     const savedTheme = localStorage.getItem('esermiktar_theme');
     if (savedTheme === 'light') {
-      themeToggle.checked = false;
+      isDarkTheme = false;
       document.body.setAttribute('data-theme', 'light');
+      if(themeIcon) themeIcon.innerHTML = moonSVG;
       window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: false } }));
     } else {
       // Default to dark
-      themeToggle.checked = true;
+      isDarkTheme = true;
       document.body.setAttribute('data-theme', 'dark');
+      if(themeIcon) themeIcon.innerHTML = sunSVG;
       window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: true } }));
     }
 
-    themeToggle.addEventListener('change', () => {
-      const isDark = themeToggle.checked;
-      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      localStorage.setItem('esermiktar_theme', isDark ? 'dark' : 'light');
-      window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark } }));
+    themeToggle.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      document.body.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+      localStorage.setItem('esermiktar_theme', isDarkTheme ? 'dark' : 'light');
+      if(themeIcon) themeIcon.innerHTML = isDarkTheme ? sunSVG : moonSVG;
+      window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: isDarkTheme } }));
     });
   }
 
