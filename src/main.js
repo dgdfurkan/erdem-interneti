@@ -229,6 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-back').addEventListener('click', (e) => {
     e.preventDefault();
     if (currentView === 'project') projectPage.hide();
+    
+    // Reset sound on going back home
+    window.isMuted = true;
+    
     currentView = 'home';
     updateMode(currentMode);
     setNavActive('btn-home');
@@ -237,6 +241,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mode-toggle').style.display = 'flex';
     document.getElementById('project-layout-toggle').style.display = 'none';
   });
+
+  // Theme Toggle
+  const themeToggle = document.getElementById('theme');
+  if (themeToggle) {
+    themeToggle.addEventListener('change', () => {
+      const isDark = themeToggle.checked;
+      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      // Dispatch event if Three.js needs to react
+      window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark } }));
+    });
+  }
 
   // Nav Interactions
   const btnHome = document.getElementById('btn-home');

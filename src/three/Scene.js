@@ -167,14 +167,14 @@ export class GalleryScene {
             color: 0xffffff,
             transparent: true,
             opacity: 1.0,
-            transmission: 0.2,
-            roughness: 0.05,
-            metalness: 1.0, // GERÇEK METALİK
-            ior: 1.6,
+            transmission: 0.1, // Düşük geçirgenlik (Metal hissi için)
+            roughness: 0.15,  // Fırçalanmış metal dokusu
+            metalness: 1.0,   // %100 Metalik
+            ior: 2.0,         // Daha güçlü kırılma/yansıma
             thickness: THICKNESS,
-            envMapIntensity: 2.0, // Çevreyi daha güçlü yansıtsın
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.02
+            envMapIntensity: 3.5, // Çevreyi çok daha güçlü yansıtsın
+            clearcoat: 1.0,      // Ekstra vernik/parlaklık katmanı
+            clearcoatRoughness: 0.05
           });
         }
 
