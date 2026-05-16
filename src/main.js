@@ -80,7 +80,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const researchPage = new ResearchPage(appContainer);
   const aboutPage = new AboutPage(appContainer);
 
-  let currentView = 'home'; // 'home', 'project', 'research', 'about'
+  let currentView = 'home'; // 'home', 'project', 'about'
+  let currentMode = '3d'; // '3d', 'grid'
+
+  function updateMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    if (currentView === 'home') {
+      if (mode === '3d') {
+        researchPage.hide();
+        gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5, onComplete: () => {
+          document.getElementById('canvas-wrap').style.pointerEvents = 'auto';
+        }});
+      } else {
+        document.getElementById('canvas-wrap').style.pointerEvents = 'none';
+        gsap.to('#canvas-wrap', { opacity: 0, duration: 0.5 });
+        researchPage.show();
+      }
+    }
+  }
+
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const mode = e.currentTarget.dataset.mode;
+      if (mode !== currentMode) {
+        if (currentView === 'project') {
+          // If in project, go back to home then switch mode
+          projectPage.hide();
+          currentView = 'home';
+          setNavActive('btn-home');
+        } else if (currentView === 'about') {
+           aboutPage.hide();
+           currentView = 'home';
+           setNavActive('btn-home');
+           document.body.classList.remove('about-open');
+        }
+        updateMode(mode);
+      }
+    });
+  });
 
   // Global Event Bus
   window.addEventListener('project-click', (e) => {
@@ -91,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setNavActive(''); // Remove home active
     projectPage.show(project);
     document.body.classList.remove('about-open');
+    document.getElementById('canvas-wrap').style.pointerEvents = 'none';
   });
 
   // Nav Interactions
@@ -116,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentView = 'about';
       aboutPage.show();
       document.body.classList.add('about-open');
+      document.getElementById('canvas-wrap').style.pointerEvents = 'none';
     }
   });
 
@@ -129,22 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentView === 'about') {
       aboutPage.hide();
     }
-    currentView = 'home';
-    gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5 });
-    document.body.classList.remove('about-open');
-  });
-
-  document.getElementById('btn-research').addEventListener('click', (e) => {
-    e.preventDefault();
-    setNavActive('btn-research');
-    if (currentView === 'project') projectPage.hide();
-    if (currentView === 'about') aboutPage.hide();
-    if (currentView !== 'research') {
-      currentView = 'research';
-      researchPage.show();
+    updateMode(currentMode); // Ensure current mode is applied (show grid if needed)
+    
+    if (currentMode === '3d') {
+      gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5, onStart: () => {
+        document.getElementById('canvas-wrap').style.pointerEvents = 'auto';
+      }});
     }
     document.body.classList.remove('about-open');
   });
+
+  // Removed btn-research listener as it is now a mode toggle
 
 
 

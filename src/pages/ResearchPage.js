@@ -28,6 +28,10 @@ export class ResearchPage {
       title.className = 'research-project-title';
       title.textContent = project.title;
       section.appendChild(title);
+      title.style.cursor = 'pointer';
+      title.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('project-click', { detail: project }));
+      });
 
       const masonry = document.createElement('div');
       masonry.className = 'research-masonry';
@@ -35,6 +39,10 @@ export class ResearchPage {
       project.images.forEach(img => {
         const item = document.createElement('div');
         item.className = 'research-item';
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+          window.dispatchEvent(new CustomEvent('project-click', { detail: project }));
+        });
 
         const isVideo = img.type === 'video';
         const mediaEl = document.createElement(isVideo ? 'video' : 'img');
@@ -71,6 +79,7 @@ export class ResearchPage {
     
     // Hide canvas
     gsap.to('#canvas-wrap', { opacity: 0, duration: 0.5 });
+    document.getElementById('canvas-wrap').style.pointerEvents = 'none';
     document.getElementById('cursor-label')?.classList.remove('visible');
   }
 
@@ -80,6 +89,7 @@ export class ResearchPage {
       duration: 0.5, 
       onComplete: () => {
         this.el.classList.remove('visible');
+        document.getElementById('canvas-wrap').style.pointerEvents = 'auto';
       }
     });
   }
