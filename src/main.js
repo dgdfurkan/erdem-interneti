@@ -5,6 +5,16 @@ import { ProjectPage } from './pages/ProjectPage.js';
 import { ResearchPage } from './pages/ResearchPage.js';
 import { AboutPage } from './pages/AboutPage.js';
 document.addEventListener('DOMContentLoaded', () => {
+  // Splash Screen Logic
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    // Show preloader for 1.5 seconds on initial load
+    preloader.classList.remove('hidden');
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+    }, 1500);
+  }
+
   // --- i18n (Language) System ---
   const translations = {
     tr: {
