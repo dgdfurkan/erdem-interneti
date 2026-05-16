@@ -55,12 +55,12 @@ export class GalleryScene {
   setupScene() {
     this.isMobile = window.innerWidth < 600;
     this.renderer = new THREE.WebGLRenderer({ antialias: !this.isMobile, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1 : 1.5));
-
-    this.renderer.shadowMap.enabled = !this.isMobile;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.setPixelRatio(this.isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5));
+    
+    // Performance: Disable shadowMap on all but high-end (can be heavy)
+    this.renderer.shadowMap.enabled = false; 
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.1;
+    this.renderer.toneMappingExposure = 1.2;
 
     this.container.appendChild(this.renderer.domElement);
 
@@ -73,13 +73,16 @@ export class GalleryScene {
 
     const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     pmremGenerator.compileEquirectangularShader();
-    this.scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    // Metalik görünüm için çevre haritası hayati önem taşır
+    const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environment = envTexture;
+    this.scene.background = new THREE.Color(0xfafafa); 
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.2); // Biraz daha parlak
     this.scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight.position.set(-5, 10, 5);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    dirLight.position.set(5, 10, 7);
     this.scene.add(dirLight);
 
     // Setup Post Processing (Desktop only for performance)
@@ -125,69 +128,59 @@ export class GalleryScene {
     // Plane yerine BoxGeometry kullanarak gerçek hacim sağlıyoruz
     const boxGeo = new THREE.BoxGeometry(TILE_WIDTH, TILE_HEIGHT, THICKNESS);
 
-    // Daha zarif beyaz kenar ışığı (Kartın sınırları)
-    const edgesGeo = new THREE.EdgesGeometry(boxGeo);
-    const edgesMat = new THREE.LineBasicMaterial({
-      opacity: 0.15 // Çok daha temiz ve ince bir cam çerçevesi
+    // Performance: Yan yüzeyler için TEK bir materyal kullanıyoruz (Draw call düşürmek için)
+    const sideMatDesktop = new THREE.MeshPhysicalMaterial({ 
+      color: 0xffffff, 
+      transparent: true,
+      opacity: 0.5,
+      transmission: 0.5, 
+      roughness: 0.0,
+      metalness: 1.0, // Tam metalik yanlar
+      ior: 1.5,
+      thickness: THICKNESS,
+      envMapIntensity: 2.5 // Yanlar parlamalı
     });
+
+    const sideMatMobile = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.2,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+
+    const sideMat = this.isMobile ? sideMatMobile : sideMatDesktop;
 
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel materyali - Mobilde daha hafif bir material kullanıyoruz
+        // Görsel materyali
         let imageMat;
         if (this.isMobile) {
           imageMat = new THREE.MeshStandardMaterial({
             color: 0xffffff,
-            transparent: true,
-            opacity: 0.95,
+            metalness: 0.8,
             roughness: 0.2,
-            metalness: 0.5
+            transparent: true,
+            opacity: 1.0
           });
         } else {
           imageMat = new THREE.MeshPhysicalMaterial({
-            color: 0xdddddd,
-            transparent: true,
-            opacity: 0.9,
-            transmission: 0.4, // Camsı geçiş
-            roughness: 0.1,   // Parlak yüzey
-            metalness: 0.9,   // Metalik his
-            ior: 1.5,         // Cam kırılması
-            thickness: THICKNESS,
-            envMapIntensity: 1.5,
-            clearcoat: 1.0,   // Ekstra parlaklık katmanı
-            clearcoatRoughness: 0.1
-          });
-        }
-
-        // Yan yüzeyler - Mobilde basit şeffaf material
-        let sideMat;
-        if (this.isMobile) {
-          sideMat = new THREE.MeshStandardMaterial({
             color: 0xffffff,
             transparent: true,
-            opacity: 0.1
-          });
-        } else {
-          sideMat = new THREE.MeshPhysicalMaterial({ 
-            color: 0xeeeeee, 
-            transparent: true,
-            opacity: 0.4,
-            transmission: 0.8, 
-            roughness: 0.0,
-            metalness: 0.8,
-            ior: 1.5,
+            opacity: 1.0,
+            transmission: 0.2,
+            roughness: 0.05,
+            metalness: 1.0, // GERÇEK METALİK
+            ior: 1.6,
             thickness: THICKNESS,
+            envMapIntensity: 2.0, // Çevreyi daha güçlü yansıtsın
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.02
           });
         }
 
-        // BoxGeometry için 6 yüzeyin materyalleri
         const materials = [
-          sideMat, // +x
-          sideMat, // -x
-          sideMat, // +y
-          sideMat, // -y
-          imageMat, // +z (ÖN YÜZ)
-          sideMat  // -z
+          sideMat, sideMat, sideMat, sideMat, imageMat, sideMat
         ];
 
         const mesh = new THREE.Mesh(boxGeo, materials);
@@ -204,26 +197,24 @@ export class GalleryScene {
         mesh.add(labelMesh);
 
         mesh.position.set(0, 0, -(globalIndex * STEP_Z));
-
         this.group.add(mesh);
 
-        const tileObj = {
+        this.tiles.push({
           mesh,
           imageMesh: mesh,
           imageMat,
-          sideMat, // Yan yüzeylerin opacity kontrolü için
+          sideMat, 
           labelMesh,
           proj,
           index: globalIndex,
-          hoverX: 0 // Hover animasyonu için eklendi
-        };
-
-        this.tiles.push(tileObj);
+          hoverX: 0 
+        });
 
         if (proj.coverImage) {
           loader.load(proj.coverImage, (tex) => {
             tex.colorSpace = THREE.SRGBColorSpace;
             tex.minFilter = THREE.LinearFilter;
+            tex.magFilter = THREE.LinearFilter;
             tex.generateMipmaps = false;
 
             const imgAspect = tex.image.width / tex.image.height;
@@ -417,9 +408,11 @@ export class GalleryScene {
     // Daha yumuşak scroll lerp — premium his
     this.scrollCurrent += (this.scrollTarget - this.scrollCurrent) * 0.06;
 
-    // Her frame'de cursor label ve hover bilgisini GÜNCELLE
-    // (Bunu döngüden önce yapıyoruz ki hoverX gecikmesiz çalışsın)
-    this.updateCursorLabel();
+    // Performance: Raycaster'ı 2 frame'de bir tetikle (CPU yükünü %50 düşürür)
+    this.frameCount = (this.frameCount || 0) + 1;
+    if (this.frameCount % 2 === 0) {
+      this.updateCursorLabel();
+    }
 
     // Proje sayısını dinamik alarak sonsuz döngü matematiğini sağlama alıyoruz
     const projectCount = PROJECTS.length; 
