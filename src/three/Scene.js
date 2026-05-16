@@ -353,6 +353,7 @@ export class GalleryScene {
     });
   }
 
+  updateCursorLabel() {
     // Jitter'ı (titremeyi) önlemek için: 
     // Eğer bir kart zaten hover durumundaysa, mouse kartın "genişletilmiş" alanından çıkmadıkça durumu bozma.
     this.raycaster.setFromCamera(this.mouse, this.camera);
