@@ -201,6 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentView === 'research') researchPage.hide();
     currentView = 'project';
     setNavActive(''); // Remove home active
+    // Reset sound for new project visit
+    window.isMuted = true;
+    
     projectPage.show(project);
     document.body.classList.remove('about-open');
     document.getElementById('canvas-wrap').style.pointerEvents = 'none';
@@ -254,6 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentView === 'project') projectPage.hide();
     else if (currentView === 'research') researchPage.hide();
     else if (currentView === 'about') aboutPage.hide();
+    
+    // Reset sound on going back home
+    window.isMuted = true;
     
     currentView = 'home';
     updateMode(currentMode);
