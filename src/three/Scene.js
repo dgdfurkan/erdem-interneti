@@ -69,7 +69,7 @@ export class GalleryScene {
 
     // ESER MİKTAR exact FOV and Perspective (Low FOV for telefoto effect)
     this.camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(1, 12, 10); // Higher Y and closer Z for the ESER MİKTAR look // BURASI
+    this.camera.position.set(1, 12, 10); // Higher Y and closer Z for the ESER MİKTAR look
 
     const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     pmremGenerator.compileEquirectangularShader();
@@ -101,12 +101,12 @@ export class GalleryScene {
   createGrid() {
     this.group = new THREE.Group();
 
-    // ESER MİKTAR exact tilt and perspective (Bottom-left to Top-right cascade) // BURASI
+    // ESER MİKTAR exact tilt and perspective (Bottom-left to Top-right cascade)
     this.group.rotation.x = -0.45; // Kartların geriye doğru yatması (Distant cards go up)
     this.group.rotation.y = -0.39; // Derinliğin sağa doğru gitmesi (Distant cards go right)
     this.group.rotation.z = 0.05;  // Ufak bir düzeltme açısı
 
-    // Center adjustment // BURASI
+    // Center adjustment
     this.group.position.x = -1.0; // Başlangıç noktasını sola al
     this.group.position.y = -0.9; // Başlangıç noktasını aşağı al
 
@@ -114,7 +114,6 @@ export class GalleryScene {
 
     this.tiles = [];
     const loader = new THREE.TextureLoader();
-    // BURASI
     const TILE_WIDTH = 2.8;
     const TILE_HEIGHT = 3.9;
     const THICKNESS = 0.05; // Daha zarif olması için tekrar yarıya düşürüldü
@@ -194,8 +193,16 @@ export class GalleryScene {
         mesh.position.set(0, 0, -(globalIndex * STEP_Z));
         this.group.add(mesh);
 
+        // Performance & Stability: Görselden bağımsız bir "hitbox" oluşturuyoruz.
+        // Bu hitbox hover animasyonuyla hareket etmez, böylece "titreme" (jitter) oluşmaz.
+        const hitboxGeo = new THREE.PlaneGeometry(TILE_WIDTH, TILE_HEIGHT);
+        const hitbox = new THREE.Mesh(hitboxGeo, new THREE.MeshBasicMaterial({ visible: false }));
+        hitbox.position.copy(mesh.position);
+        this.group.add(hitbox);
+
         this.tiles.push({
           mesh,
+          hitbox,
           imageMesh: mesh,
           imageMat,
           sideMat, 
@@ -320,17 +327,16 @@ export class GalleryScene {
       this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      // Recursive: false yapıyoruz ki labelMesh gibi alt elemanlar ışını engellemesin
-      const hits = this.raycaster.intersectObjects(this.tiles.map(t => t.imageMesh), false);
+      const hits = this.raycaster.intersectObjects(this.tiles.map(t => t.hitbox), false);
       if (hits.length > 0) {
         const validHits = hits.filter(h => {
           const worldPos = new THREE.Vector3();
           h.object.getWorldPosition(worldPos);
-          return worldPos.z < this.camera.position.z && h.object.parent.visible;
+          return worldPos.z < this.camera.position.z;
         });
 
         if (validHits.length > 0) {
-          const hitTile = this.tiles.find(t => t.imageMesh === validHits[0].object);
+          const hitTile = this.tiles.find(t => t.hitbox === validHits[0].object);
           if (hitTile) {
             window.dispatchEvent(new CustomEvent('project-click', { detail: hitTile.proj }));
           }
@@ -340,29 +346,25 @@ export class GalleryScene {
   }
 
   updateCursorLabel() {
-    // Jitter'ı (titremeyi) önlemek için: 
-    // Eğer bir kart zaten hover durumundaysa, mouse kartın "genişletilmiş" alanından çıkmadıkça durumu bozma.
     this.raycaster.setFromCamera(this.mouse, this.camera);
     
-    // Titreme çözümü: Raycaster'ı sadece kartların asıl gövdesiyle (imageMesh) değil, 
-    // daha geniş bir alanla veya kararlı bir mantıkla kontrol ediyoruz.
-    const hits = this.raycaster.intersectObjects(this.tiles.map(t => t.imageMesh), false);
+    // Titreme çözümü: Raycaster'ı hareket eden görsel mesh yerine 
+    // sabit duran hitbox'lar üzerinden ateşliyoruz. Bu, kartın hareket ederken 
+    // mouse'un altından kaçmasını ve titremesini engeller.
+    const hits = this.raycaster.intersectObjects(this.tiles.map(t => t.hitbox), false);
 
     let currentHoveredTile = null;
     if (hits.length > 0) {
-      const validHits = hits.filter(h => h.object.visible && h.distance > 0.1);
+      const validHits = hits.filter(h => h.object.visible);
       if (validHits.length > 0) {
-        currentHoveredTile = this.tiles.find(t => t.mesh === validHits[0].object);
+        currentHoveredTile = this.tiles.find(t => t.hitbox === validHits[0].object);
       }
     }
 
     // Kararlılık mantığı: Eğer zaten bir kart hover'lıysa ve yeni bir hit yoksa, 
     // mouse'un karttan çıkıp çıkmadığını kontrol etmek için raycaster'ı tekrar kullanıyoruz 
-    // ama bu sefer kartın hareket etmiş halini (world position) dikkate alıyoruz.
     if (this.hoveredTile && !currentHoveredTile) {
-       // Mouse hala eski kartın sınırları içindeyse hover'ı bırakma
-       // Bu basitçe "bir kez yakaladın mı kolay bırakma" mantığıdır.
-       const checkHits = this.raycaster.intersectObject(this.hoveredTile.imageMesh, false);
+       const checkHits = this.raycaster.intersectObject(this.hoveredTile.hitbox, false);
        if (checkHits.length > 0) {
          currentHoveredTile = this.hoveredTile;
        }
@@ -417,12 +419,9 @@ export class GalleryScene {
       let distIndex = tile.index - this.scrollCurrent;
 
       // Kusursuz infinite döngü:
-      // Eğer bir kart kamerayı iyice geçtiyse (örn: 6 birim geride kaldıysa)
-      // Onu dizinin en arkasına atıyoruz (görünmez olduğu için atladığı fark edilmez)
       while (distIndex < -6) {
         distIndex += totalTiles;
       }
-      // Ters yöne kaydırıyorsak, arkadakileri öne alıyoruz
       while (distIndex > totalTiles - 6) {
         distIndex -= totalTiles;
       }
@@ -447,34 +446,31 @@ export class GalleryScene {
       tile.mesh.position.set(driftX, driftY, localZ);
       tile.mesh.rotation.z = driftRotZ;
 
-      // Opacity management — daha geniş fade zone
+      // Hitbox sadece scroll ve drift ile hareket eder (hoverX İÇERMEZ)
+      // Bu sayede kart hareket etse de mouse hala "gerçek" yerinde algılanır ve titreme olmaz.
+      tile.hitbox.position.set(driftX - tile.hoverX, driftY, localZ);
+      tile.hitbox.rotation.z = driftRotZ;
+      
       let targetOpacity = 1;
 
       if (distIndex < -2.5) {
-        // Kameradan İYİCE GEÇTİKTEN SONRA fade (Hemen yok olmasını engeller, en az 2.5 birim bekle)
         targetOpacity = Math.max(0, 1 - Math.abs(distIndex + 2.5) * 1.5);
       }
       else if (distIndex > 15) {
-        // Çok uzaktakiler — daha geç fade
         targetOpacity = Math.max(0, 1 - (distIndex - 15) * 0.15);
       }
 
-      // Daha yumuşak opacity geçişleri
       const lerpSpeed = 0.08;
       tile.imageMat.opacity += (targetOpacity - tile.imageMat.opacity) * lerpSpeed;
       
-      // Yan yüzeylerin de aynı anda sönmesini sağlıyoruz
       if (tile.sideMat) {
         tile.sideMat.opacity += (targetOpacity - tile.sideMat.opacity) * lerpSpeed;
       }
 
-      // Label opacity da aynı şekilde fade olsun
       if (tile.labelMesh) {
         tile.labelMesh.material.opacity += (targetOpacity - tile.labelMesh.material.opacity) * lerpSpeed;
       }
 
-      // Set visibility for performance based on ACTUAL opacity, not target opacity!
-      // This prevents the mesh from instantly disappearing while it's still fading out.
       tile.mesh.visible = tile.imageMat.opacity > 0.005;
     });
 
