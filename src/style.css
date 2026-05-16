@@ -15,6 +15,12 @@ header{
   border-bottom: 1px solid rgba(0,0,0,0.05);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
 }
+#btn-back {
+  font-weight: 600;
+  color: #111;
+  background: rgba(0,0,0,0.05);
+  margin-right: 12px;
+}
 header.header-hidden {
   transform: translateY(-100%);
 }
@@ -282,7 +288,8 @@ canvas{display:block;width:100%!important;height:100%!important}
 }
 .project-page.vertical-mode .project-gallery img,
 .project-page.vertical-mode .project-gallery video,
-.project-page.vertical-mode .video-wrapper {
+.project-page.vertical-mode .video-wrapper,
+.project-page.vertical-mode .video-wrapper video {
   display: block !important;
   width: 100% !important;
   height: auto !important;

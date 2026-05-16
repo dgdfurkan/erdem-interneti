@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_projects: 'Projeler',
       nav_research: 'Grid',
       nav_about: 'Hakkında',
+      nav_back: 'Geri',
+      mode_3d: '3D',
+      mode_grid: 'GRID',
+      layout_horiz: 'YATAY',
+      layout_vert: 'DİKEY',
       about_bio: "2000 yılında Tokat'ta doğan Erdem Temür, şu an İstanbul Bilgi Üniversitesi Görsel İletişim Tasarımı'nda son sınıf öğrencisi ve İstanbul merkezli bir Hard Surface 3D tasarımcısıdır. Oyun dünyasına olan tutkusu, onu karmaşık mekanik yapılar ve detaylı endüstriyel tasarımlar oluşturmaya yöneltti. Çalışmalarında estetik ve işlevselliği birleştirerek, geleceğin teknolojilerini ve bilim kurgu dünyalarını hayata geçirmeyi amaçlıyor.",
       toggle_overview: 'Genel Bakış',
       toggle_index: 'İndeks',
@@ -22,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_projects: 'Projects',
       nav_research: 'Grid',
       nav_about: 'About',
+      nav_back: 'Back',
+      mode_3d: '3D',
+      mode_grid: 'GRID',
+      layout_horiz: 'HORIZ',
+      layout_vert: 'VERT',
       about_bio: "Born in Tokat in 2000, Erdem Temür is currently a senior Visual Communication Design student at Istanbul Bilgi University and an Istanbul-based Hard Surface 3D designer. His passion for gaming led him to specialize in creating complex mechanical structures and detailed industrial designs. By blending aesthetics with functionality in his work, he aims to bring future technologies and science fiction worlds to life.",
       toggle_overview: 'Overview',
       toggle_index: 'Index',
@@ -198,6 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // UI Toggles
     document.getElementById('mode-toggle').style.display = 'none';
     document.getElementById('project-layout-toggle').style.display = 'flex';
+    document.getElementById('btn-back').style.display = 'flex';
+    document.getElementById('btn-home').style.display = 'none';
     
     // Apply current layout choice
     const projectEl = document.querySelector('.project-page');
@@ -207,9 +219,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.getElementById('btn-back').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (currentView === 'project') projectPage.hide();
+    currentView = 'home';
+    updateMode(currentMode);
+    setNavActive('btn-home');
+    document.getElementById('btn-back').style.display = 'none';
+    document.getElementById('btn-home').style.display = 'flex';
+    document.getElementById('mode-toggle').style.display = 'flex';
+    document.getElementById('project-layout-toggle').style.display = 'none';
+  });
+
   // Nav Interactions
   const btnHome = document.getElementById('btn-home');
   const btnAbout = document.getElementById('btn-about');
+  const btnBack = document.getElementById('btn-back');
 
   function setNavActive(id) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));

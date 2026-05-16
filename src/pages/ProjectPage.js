@@ -12,7 +12,8 @@ export class ProjectPage {
 
     // Fare tekerleğini (vertical scroll) yatay kaydırmaya (horizontal) çeviriyoruz (Sadece Desktop için)
     this.el.addEventListener('wheel', (e) => {
-      if (window.innerWidth > 600 && e.deltaY !== 0) {
+      // Eğer dikey mod aktifse, tekerlek doğal dikey scroll yapmalı
+      if (window.innerWidth > 600 && e.deltaY !== 0 && !this.el.classList.contains('vertical-mode')) {
         e.preventDefault();
         this.el.scrollLeft += e.deltaY;
       }
