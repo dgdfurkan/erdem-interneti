@@ -385,6 +385,12 @@ export class GalleryScene {
   bindEvents() {
     this._onResize = this.resize.bind(this);
     window.addEventListener('resize', this._onResize);
+
+    // Listen for dark mode theme changes
+    window.addEventListener('theme-changed', (e) => {
+      const isDark = e.detail.isDark;
+      this.scene.background = new THREE.Color(isDark ? 0x050505 : 0xfafafa);
+    });
   }
 
   resize() {
