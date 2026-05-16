@@ -186,11 +186,6 @@ export class GalleryScene {
         const mesh = new THREE.Mesh(boxGeo, materials);
         mesh.frustumCulled = false; 
 
-        // CSS Glowing Border efektini ekle
-        const edgeLines = new THREE.LineSegments(edgesGeo, edgesMat);
-        edgeLines.frustumCulled = false;
-        mesh.add(edgeLines);
-
         // SAĞ ALT'a proje ismi etiketi
         const labelMesh = this.createTextLabel(proj.title, TILE_WIDTH, TILE_HEIGHT, THICKNESS);
         labelMesh.frustumCulled = false;
