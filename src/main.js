@@ -207,7 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // UI Toggles
     document.getElementById('mode-toggle').style.display = 'none';
-    document.getElementById('project-layout-toggle').style.display = 'flex';
+    if (window.innerWidth > 600) {
+      document.getElementById('project-layout-toggle').style.display = 'flex';
+    } else {
+      document.getElementById('project-layout-toggle').style.display = 'none';
+    }
     document.getElementById('btn-back').style.display = 'flex';
     document.getElementById('btn-home').style.display = 'none';
     
