@@ -139,12 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateMode(mode) {
     currentMode = mode;
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    document.querySelectorAll('.view-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mode === mode);
     });
 
     if (currentView === 'home') {
-      document.getElementById('mode-toggle').style.display = 'flex';
+      document.getElementById('home-view-toggle').style.display = 'flex';
       document.getElementById('project-layout-toggle').style.display = 'none';
       if (mode === '3d') {
         researchPage.hide();
@@ -175,12 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.mode-btn').forEach(btn => {
+  document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const mode = e.currentTarget.dataset.mode;
       if (mode !== currentMode) {
         if (currentView === 'project') {
-          // If in project, go back to home then switch mode
           projectPage.hide();
           currentView = 'home';
           setNavActive('btn-home');
@@ -209,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('canvas-wrap').style.pointerEvents = 'none';
     
     // UI Toggles
-    document.getElementById('mode-toggle').style.display = 'none';
+    document.getElementById('home-view-toggle').style.display = 'none';
     if (window.innerWidth > 600) {
       document.getElementById('project-layout-toggle').style.display = 'flex';
     } else {
@@ -238,17 +237,30 @@ document.addEventListener('DOMContentLoaded', () => {
     setNavActive('btn-home');
     document.getElementById('btn-back').style.display = 'none';
     document.getElementById('btn-home').style.display = 'flex';
-    document.getElementById('mode-toggle').style.display = 'flex';
+    document.getElementById('home-view-toggle').style.display = 'flex';
     document.getElementById('project-layout-toggle').style.display = 'none';
   });
 
-  // Theme Toggle
+  // Theme Toggle & Persistence
   const themeToggle = document.getElementById('theme');
   if (themeToggle) {
+    // Check localStorage on load
+    const savedTheme = localStorage.getItem('esermiktar_theme');
+    if (savedTheme === 'light') {
+      themeToggle.checked = false;
+      document.body.setAttribute('data-theme', 'light');
+      window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: false } }));
+    } else {
+      // Default to dark
+      themeToggle.checked = true;
+      document.body.setAttribute('data-theme', 'dark');
+      window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: true } }));
+    }
+
     themeToggle.addEventListener('change', () => {
       const isDark = themeToggle.checked;
       document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      // Dispatch event if Three.js needs to react
+      localStorage.setItem('esermiktar_theme', isDark ? 'dark' : 'light');
       window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark } }));
     });
   }

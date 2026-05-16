@@ -37,6 +37,9 @@ export class ProjectPage {
     this.el.scrollLeft = 0;
     this.el.scrollTop = 0;
     
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.remove('hidden');
+    
     // Info Slide (ilk ekran — başlık ve açıklama)
     const infoSlide = document.createElement('div');
     infoSlide.className = 'project-info-slide';
@@ -54,9 +57,20 @@ export class ProjectPage {
     const gallery = document.createElement('div');
     gallery.className = 'project-gallery';
 
+    const mediaPromises = [];
+
     project.images.forEach((img) => {
       const isVideo = img.type === 'video';
       const mediaEl = document.createElement(isVideo ? 'video' : 'img');
+      
+      mediaPromises.push(new Promise((resolve) => {
+        if (isVideo) {
+          mediaEl.oncanplaythrough = resolve;
+        } else {
+          mediaEl.onload = resolve;
+        }
+        mediaEl.onerror = resolve; // Hata olursa da beklemeyi kes
+      }));
       
       // Doğru yol: /erdem-interneti/ + esermiktar/deuce/1/bomb4.jpg
       mediaEl.src = this.baseURL + img.src;
@@ -111,9 +125,20 @@ export class ProjectPage {
 
     this.el.appendChild(gallery);
 
+    if (preloader) {
+      Promise.all(mediaPromises).then(() => {
+        preloader.classList.add('hidden');
+      });
+      // Güvenlik süresi: Eğer internet çok yavaşsa 4 saniye sonra her halükarda aç (takılı kalmasın)
+      setTimeout(() => preloader.classList.add('hidden'), 4000);
+    }
+
     // CSS class ile göster (display:flex korunsun, display:block OLMAMALI)
     this.el.classList.add('visible');
-    gsap.fromTo(this.el, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+    gsap.fromTo(this.el, 
+      { opacity: 0 }, 
+      { opacity: 1, duration: 0.5, delay: 0.1 }
+    );
     
     // 3D canvas'ı gizle
     gsap.to('#canvas-wrap', { opacity: 0, duration: 0.5 });

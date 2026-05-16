@@ -22,12 +22,8 @@
         <li><button class="nav-btn" id="btn-about"><span data-i18n-key="nav_about">About</span></button></li>
       </ul>
     </nav>
+    <div class="logo">esermiktar®️</div>
     <div id="top-right-wrap">
-      <div id="mode-toggle">
-        <button class="mode-btn active" data-mode="3d"><span data-i18n-key="mode_3d">3D</span></button>
-        <span class="mode-sep">/</span>
-        <button class="mode-btn" data-mode="grid"><span data-i18n-key="mode_grid">GRID</span></button>
-      </div>
       <div id="project-layout-toggle" style="display: none;">
         <button class="layout-btn active" data-layout="horiz"><span data-i18n-key="layout_horiz">HORIZ</span></button>
         <span class="layout-sep">/</span>
@@ -66,7 +62,19 @@
   <!-- CURSOR LABEL -->
   <span id="cursor-label"></span>
 
+  <!-- BOTTOM RIGHT TOGGLE (Home Page Only) -->
+  <div id="home-view-toggle">
+    <button class="view-btn active" data-mode="3d"><span data-i18n-key="mode_3d">3D VIEW</span></button>
+    <span class="view-sep">/</span>
+    <button class="view-btn" data-mode="grid"><span data-i18n-key="mode_grid">GRID VIEW</span></button>
+  </div>
+
   <div id="blur-overlay"></div>
+  
+  <!-- BREATHING PRELOADER -->
+  <div id="preloader">
+    <div class="preloader-text">esermiktar</div>
+  </div>
 
   <script type="module" src="./src/main.js"></script>
 </body>
