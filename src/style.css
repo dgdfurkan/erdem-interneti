@@ -54,14 +54,25 @@ header.header-hidden {
 header nav{display:flex;gap:4px;pointer-events:all}
 header nav ul{display:flex;gap:4px;list-style:none}
 header nav ul li{display:flex}
+}
 @media (max-width: 600px) {
-  header { padding: 8px 12px; }
-  header nav { flex: 1; }
+  header { 
+    top: auto; 
+    bottom: 0; 
+    padding: 10px 16px; 
+    border-bottom: none;
+    border-top: 1px solid var(--header-border);
+  }
+  header.header-hidden {
+    transform: translateY(100%);
+  }
+  header nav { flex: unset; }
 }
 header nav ul li>*{pointer-events:all}
 
 .logo {
-  position: absolute;
+  position: fixed;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Andale Mono', monospace;
@@ -183,6 +194,13 @@ canvas{display:block;width:100%!important;height:100%!important}
   transition: all 0.3s ease;
 }
 .view-sep { color: var(--text-muted); opacity: 0.5; font-size: 11px; }
+
+@media (max-width: 600px) {
+  #home-view-toggle {
+    bottom: 70px;
+    right: 16px;
+  }
+}
 
 /* ── UI BUTTONS (SVG) ── */
 .theme-btn, .layout-btn, .view-btn {

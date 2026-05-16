@@ -126,11 +126,14 @@ export class ProjectPage {
     this.el.appendChild(gallery);
 
     if (preloader) {
-      Promise.all(mediaPromises).then(() => {
+      // Performans optimizasyonu: Sadece ilk 2 medyanın yüklenmesini bekle veya maks 1 saniye bekle
+      const crucialPromises = mediaPromises.slice(0, 2);
+      Promise.race([
+        Promise.all(crucialPromises),
+        new Promise(resolve => setTimeout(resolve, 1000))
+      ]).then(() => {
         preloader.classList.add('hidden');
       });
-      // Güvenlik süresi: Eğer internet çok yavaşsa 4 saniye sonra her halükarda aç (takılı kalmasın)
-      setTimeout(() => preloader.classList.add('hidden'), 4000);
     }
 
     // CSS class ile göster (display:flex korunsun, display:block OLMAMALI)
