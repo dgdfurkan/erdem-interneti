@@ -134,6 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (currentView === 'home') {
+      document.getElementById('mode-toggle').style.display = 'flex';
+      document.getElementById('project-layout-toggle').style.display = 'none';
       if (mode === '3d') {
         researchPage.hide();
         gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5, onComplete: () => {
@@ -146,6 +148,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  // --- Project Layout Logic ---
+  let currentLayout = 'horiz';
+  document.querySelectorAll('.layout-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const layout = e.currentTarget.dataset.layout;
+      currentLayout = layout;
+      document.querySelectorAll('.layout-btn').forEach(b => b.classList.toggle('active', b.dataset.layout === layout));
+      
+      const projectEl = document.querySelector('.project-page');
+      if (projectEl) {
+        if (layout === 'vert') projectEl.classList.add('vertical-mode');
+        else projectEl.classList.remove('vertical-mode');
+      }
+    });
+  });
 
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -171,12 +189,22 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('project-click', (e) => {
     const project = e.detail;
     if (currentView === 'research') researchPage.hide();
-    if (currentView === 'about') aboutPage.hide();
     currentView = 'project';
     setNavActive(''); // Remove home active
     projectPage.show(project);
     document.body.classList.remove('about-open');
     document.getElementById('canvas-wrap').style.pointerEvents = 'none';
+    
+    // UI Toggles
+    document.getElementById('mode-toggle').style.display = 'none';
+    document.getElementById('project-layout-toggle').style.display = 'flex';
+    
+    // Apply current layout choice
+    const projectEl = document.querySelector('.project-page');
+    if (projectEl) {
+      if (currentLayout === 'vert') projectEl.classList.add('vertical-mode');
+      else projectEl.classList.remove('vertical-mode');
+    }
   });
 
   // Nav Interactions
@@ -191,32 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-
-
-  btnAbout.addEventListener('click', (e) => {
-    e.preventDefault();
-    setNavActive('btn-about');
-    if (currentView === 'project') projectPage.hide();
-    if (currentView === 'research') researchPage.hide();
-    if (currentView !== 'about') {
-      currentView = 'about';
-      aboutPage.show();
-      document.body.classList.add('about-open');
-      document.getElementById('canvas-wrap').style.pointerEvents = 'none';
-    }
-  });
-
   btnHome.addEventListener('click', (e) => {
     e.preventDefault();
     setNavActive('btn-home');
-    if (currentView === 'project') {
-      projectPage.hide();
-    } else if (currentView === 'research') {
-      researchPage.hide();
-    } else if (currentView === 'about') {
-      aboutPage.hide();
-    }
-    updateMode(currentMode); // Ensure current mode is applied (show grid if needed)
+    if (currentView === 'project') projectPage.hide();
+    else if (currentView === 'research') researchPage.hide();
+    else if (currentView === 'about') aboutPage.hide();
+    
+    currentView = 'home';
+    updateMode(currentMode);
     
     if (currentMode === '3d') {
       gsap.to('#canvas-wrap', { opacity: 1, duration: 0.5, onStart: () => {
@@ -224,11 +235,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }});
     }
     document.body.classList.remove('about-open');
+    document.getElementById('mode-toggle').style.display = 'flex';
+    document.getElementById('project-layout-toggle').style.display = 'none';
   });
 
-  // Removed btn-research listener as it is now a mode toggle
-
-
+  btnAbout.addEventListener('click', (e) => {
+    e.preventDefault();
+    setNavActive('btn-about');
+    if (currentView === 'project') projectPage.hide();
+    else if (currentView === 'research') researchPage.hide();
+    
+    if (currentView !== 'about') {
+      currentView = 'about';
+      aboutPage.show();
+      document.body.classList.add('about-open');
+      document.getElementById('canvas-wrap').style.pointerEvents = 'none';
+    }
+    document.getElementById('mode-toggle').style.display = 'none';
+    document.getElementById('project-layout-toggle').style.display = 'none';
+  });
 
   // Init Fade
   const whiteFade = document.getElementById('white-fade');

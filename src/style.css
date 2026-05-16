@@ -65,7 +65,7 @@ header nav ul li>*{pointer-events:all}
   #top-right-wrap { gap: 12px; }
 }
 
-#mode-toggle, #lang-toggle {
+#mode-toggle, #project-layout-toggle, #lang-toggle {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -75,20 +75,20 @@ header nav ul li>*{pointer-events:all}
   transition: all 0.3s ease;
 }
 
-.mode-btn, .lang-btn {
+.mode-btn, .layout-btn, .lang-btn {
   color: rgba(0, 0, 0, 0.4);
   transition: all 0.2s;
   padding: 2px 4px;
   text-transform: uppercase;
 }
-.mode-btn:hover, .lang-btn:hover {
+.mode-btn:hover, .layout-btn:hover, .lang-btn:hover {
   color: rgba(0, 0, 0, 0.7);
 }
-.mode-btn.active, .lang-btn.active {
+.mode-btn.active, .layout-btn.active, .lang-btn.active {
   color: rgba(0, 0, 0, 1);
   font-weight: 600;
 }
-.mode-sep, .lang-sep {
+.mode-sep, .layout-sep, .lang-sep {
   color: rgba(0, 0, 0, 0.2);
 }
 
@@ -259,6 +259,36 @@ canvas{display:block;width:100%!important;height:100%!important}
 .project-page.visible {
   opacity: 1;
   pointer-events: all;
+}
+
+/* VERTICAL MODE (Desktop Switch) */
+.project-page.vertical-mode {
+  display: block !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+.project-page.vertical-mode .project-info-slide {
+  height: auto !important;
+  min-height: 100vh;
+  width: 100% !important;
+  padding: 120px 24px 40px !important;
+}
+.project-page.vertical-mode .project-gallery {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+}
+.project-page.vertical-mode .project-gallery img,
+.project-page.vertical-mode .project-gallery video,
+.project-page.vertical-mode .video-wrapper {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  margin-bottom: 10px !important;
 }
 
 .project-info-slide {

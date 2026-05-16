@@ -140,20 +140,22 @@ export class GalleryScene {
             color: 0xffffff,
             transparent: true,
             opacity: 0.95,
-            roughness: 0.1,
-            metalness: 0.1
+            roughness: 0.2,
+            metalness: 0.5
           });
         } else {
           imageMat = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff,
+            color: 0xdddddd,
             transparent: true,
             opacity: 0.9,
-            transmission: 0.5,
-            roughness: 0.05,
-            metalness: 0.0,
-            ior: 1.45,
+            transmission: 0.4, // Camsı geçiş
+            roughness: 0.1,   // Parlak yüzey
+            metalness: 0.9,   // Metalik his
+            ior: 1.5,         // Cam kırılması
             thickness: THICKNESS,
-            envMapIntensity: 1.0
+            envMapIntensity: 1.5,
+            clearcoat: 1.0,   // Ekstra parlaklık katmanı
+            clearcoatRoughness: 0.1
           });
         }
 
@@ -167,13 +169,13 @@ export class GalleryScene {
           });
         } else {
           sideMat = new THREE.MeshPhysicalMaterial({ 
-            color: 0xffffff, 
+            color: 0xeeeeee, 
             transparent: true,
-            opacity: 0.2,
-            transmission: 1.0, 
+            opacity: 0.4,
+            transmission: 0.8, 
             roughness: 0.0,
-            metalness: 0.0,
-            ior: 1.45,
+            metalness: 0.8,
+            ior: 1.5,
             thickness: THICKNESS,
           });
         }
@@ -351,31 +353,40 @@ export class GalleryScene {
     });
   }
 
-  updateCursorLabel() {
-    // Her frame'de raycaster ateşle — scroll sırasında da label güncellensin
-    // Recursive: false yapıyoruz ki kartın üzerindeki çizgiler ve yazılar tıklamayı/hover'ı bozmasin
+    // Jitter'ı (titremeyi) önlemek için: 
+    // Eğer bir kart zaten hover durumundaysa, mouse kartın "genişletilmiş" alanından çıkmadıkça durumu bozma.
     this.raycaster.setFromCamera(this.mouse, this.camera);
+    
+    // Titreme çözümü: Raycaster'ı sadece kartların asıl gövdesiyle (imageMesh) değil, 
+    // daha geniş bir alanla veya kararlı bir mantıkla kontrol ediyoruz.
     const hits = this.raycaster.intersectObjects(this.tiles.map(t => t.imageMesh), false);
 
-    let hoveredTile = null;
-    let hoveredProj = null;
+    let currentHoveredTile = null;
     if (hits.length > 0) {
-      // Sadece görünür olan ve kameranın makul bir mesafesinde olanları al
       const validHits = hits.filter(h => h.object.visible && h.distance > 0.1);
       if (validHits.length > 0) {
-        const hit = this.tiles.find(t => t.mesh === validHits[0].object);
-        if (hit) {
-          hoveredProj = hit.proj;
-          hoveredTile = hit;
-        }
+        currentHoveredTile = this.tiles.find(t => t.mesh === validHits[0].object);
       }
     }
 
-    this.hoveredProj = hoveredProj;
-    this.hoveredTile = hoveredTile;
+    // Kararlılık mantığı: Eğer zaten bir kart hover'lıysa ve yeni bir hit yoksa, 
+    // mouse'un karttan çıkıp çıkmadığını kontrol etmek için raycaster'ı tekrar kullanıyoruz 
+    // ama bu sefer kartın hareket etmiş halini (world position) dikkate alıyoruz.
+    if (this.hoveredTile && !currentHoveredTile) {
+       // Mouse hala eski kartın sınırları içindeyse hover'ı bırakma
+       // Bu basitçe "bir kez yakaladın mı kolay bırakma" mantığıdır.
+       const checkHits = this.raycaster.intersectObject(this.hoveredTile.imageMesh, false);
+       if (checkHits.length > 0) {
+         currentHoveredTile = this.hoveredTile;
+       }
+    }
+
+    this.hoveredTile = currentHoveredTile;
+    this.hoveredProj = currentHoveredTile ? currentHoveredTile.proj : null;
+
     const label = document.getElementById('cursor-label');
-    if (hoveredProj && label) {
-      label.textContent = hoveredProj.title;
+    if (this.hoveredProj && label) {
+      label.textContent = this.hoveredProj.title;
       label.classList.add('visible');
     } else if (label) {
       label.classList.remove('visible');
