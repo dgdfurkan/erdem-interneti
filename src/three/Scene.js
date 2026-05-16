@@ -53,10 +53,11 @@ export class GalleryScene {
   }
 
   setupScene() {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.isMobile = window.innerWidth < 600;
+    this.renderer = new THREE.WebGLRenderer({ antialias: !this.isMobile, powerPreference: "high-performance" });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1 : 1.5));
 
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = !this.isMobile;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.1;
@@ -81,14 +82,13 @@ export class GalleryScene {
     dirLight.position.set(-5, 10, 5);
     this.scene.add(dirLight);
 
-    // Setup Post Processing
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
-
-    // Performans için Bloom çözünürlüğü yarıya düşürüldü (Görselliği bozmaz, FPS'i uçurur)
-    // Bloom efekti yeterli, Chromatic Aberration (renk kayması) istenmediği için kaldırıldı
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.1, 0.4, 0.85);
-    this.composer.addPass(bloomPass);
+    // Setup Post Processing (Desktop only for performance)
+    if (!this.isMobile) {
+      this.composer = new EffectComposer(this.renderer);
+      this.composer.addPass(new RenderPass(this.scene, this.camera));
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.1, 0.4, 0.85);
+      this.composer.addPass(bloomPass);
+    }
 
     this.clock = new THREE.Clock();
 
@@ -133,30 +133,50 @@ export class GalleryScene {
 
     for (let r = 0; r < REPEAT; r++) {
       PROJECTS.forEach((proj) => {
-        // Görsel materyali - "Cam Slayt" efekti (Görselin kendisi cam gibi)
-        const imageMat = new THREE.MeshPhysicalMaterial({
-          color: 0xffffff,
-          transparent: true,
-          opacity: 0.9,      // Görselin netliği için opacity yüksek
-          transmission: 0.5, // Ama arkasını cam gibi göstersin
-          roughness: 0.05,   // Pürüzsüz cam yüzeyi
-          metalness: 0.0,
-          ior: 1.45,
-          thickness: THICKNESS,
-          envMapIntensity: 1.0
-        });
+        // Görsel materyali - Mobilde daha hafif bir material kullanıyoruz
+        let imageMat;
+        if (this.isMobile) {
+          imageMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.95,
+            roughness: 0.1,
+            metalness: 0.1
+          });
+        } else {
+          imageMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.9,
+            transmission: 0.5,
+            roughness: 0.05,
+            metalness: 0.0,
+            ior: 1.45,
+            thickness: THICKNESS,
+            envMapIntensity: 1.0
+          });
+        }
 
-        // Yan yüzeyler - Tam şeffaf cam
-        const sideMat = new THREE.MeshPhysicalMaterial({ 
-          color: 0xffffff, 
-          transparent: true,
-          opacity: 0.2,
-          transmission: 1.0, 
-          roughness: 0.0,
-          metalness: 0.0,
-          ior: 1.45,
-          thickness: THICKNESS,
-        });
+        // Yan yüzeyler - Mobilde basit şeffaf material
+        let sideMat;
+        if (this.isMobile) {
+          sideMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.1
+          });
+        } else {
+          sideMat = new THREE.MeshPhysicalMaterial({ 
+            color: 0xffffff, 
+            transparent: true,
+            opacity: 0.2,
+            transmission: 1.0, 
+            roughness: 0.0,
+            metalness: 0.0,
+            ior: 1.45,
+            thickness: THICKNESS,
+          });
+        }
 
         // BoxGeometry için 6 yüzeyin materyalleri
         const materials = [
@@ -369,7 +389,7 @@ export class GalleryScene {
 
   resize() {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.composer.setSize(window.innerWidth, window.innerHeight);
+    if (this.composer) this.composer.setSize(window.innerWidth, window.innerHeight);
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
   }
@@ -458,8 +478,12 @@ export class GalleryScene {
       tile.mesh.visible = tile.imageMat.opacity > 0.005;
     });
 
-    // Render via composer for premium post-processing
-    this.composer.render();
+    // Render via composer on desktop, direct render on mobile for performance
+    if (this.isMobile) {
+      this.renderer.render(this.scene, this.camera);
+    } else {
+      this.composer.render();
+    }
   }
 
   destroy() {

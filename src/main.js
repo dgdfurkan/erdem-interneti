@@ -80,6 +80,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const researchPage = new ResearchPage(appContainer);
   const aboutPage = new AboutPage(appContainer);
 
+  // --- Header Hide/Show Logic ---
+  let lastScrollY = 0;
+  const header = document.querySelector('header');
+  
+  function handleHeaderScroll(currentScrollY) {
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      header.classList.add('header-hidden');
+    } else {
+      header.classList.remove('header-hidden');
+    }
+    lastScrollY = currentScrollY;
+  }
+
+  // Listen to scroll on containers
+  const scrollContainers = ['.project-page', '.research-page', '.about-page'];
+  scrollContainers.forEach(selector => {
+    const el = document.querySelector(selector);
+    if (el) {
+      el.addEventListener('scroll', () => {
+        handleHeaderScroll(el.scrollTop);
+      }, { passive: true });
+    }
+  });
+
+  // Also handle home page scroll (though it's 3D, we can use wheel/touch)
+  window.addEventListener('wheel', (e) => {
+    if (currentView === 'home') {
+      if (e.deltaY > 0) header.classList.add('header-hidden');
+      else header.classList.remove('header-hidden');
+    }
+  }, { passive: true });
+
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    const touchY = e.touches[0].clientY;
+    if (currentView === 'home') {
+      if (touchStartY - touchY > 20) header.classList.add('header-hidden');
+      else if (touchY - touchStartY > 20) header.classList.remove('header-hidden');
+    }
+  }, { passive: true });
+
   let currentView = 'home'; // 'home', 'project', 'about'
   let currentMode = '3d'; // '3d', 'grid'
 
