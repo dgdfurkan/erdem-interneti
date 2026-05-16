@@ -67,6 +67,7 @@ header nav ul li{display:flex}
     transform: translateY(100%);
   }
   header nav { flex: unset; }
+  .logo { display: none; }
 }
 header nav ul li>*{pointer-events:all}
 
