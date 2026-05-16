@@ -280,6 +280,20 @@ export class GalleryScene {
       this.scrollTarget += speed;
     }, { passive: false });
 
+    // Touch support for mobile scrolling
+    let touchStartY = 0;
+    this.container.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    this.container.addEventListener('touchmove', (e) => {
+      if (this.isTransitioning) return;
+      const touchY = e.touches[0].clientY;
+      const deltaY = touchStartY - touchY;
+      this.scrollTarget += deltaY * 0.02; // Touch scroll sensitivity
+      touchStartY = touchY;
+    }, { passive: true });
+
     window.addEventListener('mousemove', (e) => {
       this.lastMouseX = e.clientX;
       this.lastMouseY = e.clientY;
@@ -349,7 +363,8 @@ export class GalleryScene {
   }
 
   bindEvents() {
-    window.addEventListener('resize', this.resize.bind(this));
+    this._onResize = this.resize.bind(this);
+    window.addEventListener('resize', this._onResize);
   }
 
   resize() {
@@ -448,7 +463,7 @@ export class GalleryScene {
   }
 
   destroy() {
-    window.removeEventListener('resize', this.resize);
+    window.removeEventListener('resize', this._onResize);
     this.container.innerHTML = '';
   }
 }

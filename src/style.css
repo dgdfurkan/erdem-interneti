@@ -91,7 +91,7 @@ header nav ul li>*{pointer-events:all}
   color: rgba(255,255,255,0.2);
 }
 /* ── CANVAS ── */
-#canvas-wrap{position:fixed;inset:0;z-index:1}
+#canvas-wrap{position:fixed;inset:0;z-index:1;touch-action:none}
 canvas{display:block;width:100%!important;height:100%!important}
 
 /* ── CURSOR LABEL ── */
@@ -403,6 +403,10 @@ canvas{display:block;width:100%!important;height:100%!important}
   color: #111;
   border-bottom: 1px solid rgba(0,0,0,0.1);
   padding-bottom: 8px;
+}
+
+#canvas-wrap {
+  touch-action: none;
 }
 
 .research-masonry {
