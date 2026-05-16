@@ -507,7 +507,7 @@ canvas{display:block;width:100%!important;height:100%!important}
   display: flex;
   align-items: center;
   -webkit-tap-highlight-color: transparent;
-  font-size: 8px; /* Global scale for the toggle */
+  font-size: 5.5px; /* Global scale for the toggle (reduced size) */
   margin-left: 15px;
 }
 
